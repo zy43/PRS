@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ittime.linglingbo.modules.topic.mapper.TblTopicMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ittime.linglingbo.modules.topic.model.TblTopic">
+        <id column="topic" property="topic" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+        <result column="deleted" property="deleted" />
+        <result column="participation" property="participation" />
+        <result column="amount_play" property="amountPlay" />
+        <result column="using_trend" property="usingTrend" />
+        <result column="hot_three" property="hotThree" />
+        <result column="most_comments" property="mostComments" />
+        <result column="most_shared" property="mostShared" />
+    </resultMap>
+
+</mapper>

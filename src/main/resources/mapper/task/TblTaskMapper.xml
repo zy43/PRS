@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ittime.linglingbo.modules.task.mapper.TblTaskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ittime.linglingbo.modules.task.model.TblTask">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+        <result column="deleted" property="deleted" />
+        <result column="owner_id" property="ownerId" />
+        <result column="task_name" property="taskName" />
+        <result column="cooperation_model" property="cooperationModel" />
+        <result column="commission_percent" property="commissionPercent" />
+        <result column="budget" property="budget" />
+        <result column="task_desc" property="taskDesc" />
+        <result column="earnest_money" property="earnestMoney" />
+        <result column="task_status" property="taskStatus" />
+        <result column="auditor_admin_id" property="auditorAdminId" />
+    </resultMap>
+
+</mapper>

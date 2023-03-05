@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ittime.linglingbo.modules.goods.mapper.TblGoodsAudienceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ittime.linglingbo.modules.goods.model.TblGoodsAudience">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+        <result column="deleted" property="deleted" />
+        <result column="goods_id" property="goodsId" />
+        <result column="p_male" property="pMale" />
+        <result column="p_female" property="pFemale" />
+        <result column="p_age6_17" property="pAge617" />
+        <result column="p_age18_24" property="pAge1824" />
+        <result column="p_age25_30" property="pAge2530" />
+        <result column="p_age31_35" property="pAge3135" />
+        <result column="p_age36_40" property="pAge3640" />
+        <result column="p_age41" property="pAge41" />
+        <result column="p_province" property="pProvince" />
+        <result column="p_city" property="pCity" />
+        <result column="p_proportion" property="pProportion" />
+    </resultMap>
+
+</mapper>

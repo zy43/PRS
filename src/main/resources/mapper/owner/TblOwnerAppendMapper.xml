@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ittime.linglingbo.modules.owner.mapper.TblOwnerAppendMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ittime.linglingbo.modules.owner.model.TblOwnerAppend">
+        <id column="owner_id" property="ownerId" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+        <result column="deleted" property="deleted" />
+        <result column="owner_name" property="ownerName" />
+        <result column="industry" property="industry" />
+        <result column="label" property="label" />
+        <result column="introduction" property="introduction" />
+        <result column="contact_information" property="contactInformation" />
+        <result column="blue_v" property="blueV" />
+        <result column="total_fans" property="totalFans" />
+        <result column="total_videos" property="totalVideos" />
+        <result column="total_likes" property="totalLikes" />
+        <result column="total_shares" property="totalShares" />
+        <result column="total_comments" property="totalComments" />
+        <result column="star_index" property="starIndex" />
+        <result column="percent_man" property="percentMan" />
+        <result column="blue_v_rank_rise" property="blueVRankRise" />
+        <result column="region_rank_rise" property="regionRankRise" />
+        <result column="fans_rank_rise" property="fansRankRise" />
+        <result column="industry_rank_rise" property="industryRankRise" />
+        <result column="month_digg_rank_rise" property="monthDiggRankRise" />
+        <result column="month_works" property="monthWorks" />
+        <result column="month_fans_rank_rise" property="monthFansRankRise" />
+        <result column="portrait_province" property="portraitProvince" />
+        <result column="portrait_city" property="portraitCity" />
+        <result column="portrait_age" property="portraitAge" />
+        <result column="portrait_sex" property="portraitSex" />
+        <result column="live_sales" property="liveSales" />
+        <result column="frequency" property="frequency" />
+        <result column="hot_words" property="hotWords" />
+        <result column="heat" property="heat" />
+        <result column="heat_rise" property="heatRise" />
+        <result column="relate_videos" property="relateVideos" />
+        <result column="relate_lives" property="relateLives" />
+        <result column="relate_streamers" property="relateStreamers" />
+        <result column="relate_live_streamers" property="relateLiveStreamers" />
+        <result column="relate_fans_top" property="relateFansTop" />
+        <result column="relate_goods_douyin" property="relateGoodsDouyin" />
+    </resultMap>
+
+</mapper>

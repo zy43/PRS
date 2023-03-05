@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ittime.linglingbo.modules.goods.mapper.TblGoodsRelateVideoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ittime.linglingbo.modules.goods.model.TblGoodsRelateVideo">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+        <result column="deleted" property="deleted" />
+        <result column="goods_id" property="goodsId" />
+        <result column="video_id" property="videoId" />
+        <result column="streamer_id" property="streamerId" />
+        <result column="sales" property="sales" />
+        <result column="video_category" property="videoCategory" />
+        <result column="digg_count" property="diggCount" />
+    </resultMap>
+
+    <select id="getGoodsVideoInfo" resultType="com.ittime.linglingbo.modules.ums.dto.UmsGoodsVO">
+        SELECT
+            tbl_goods_relate_video.goods_id goods_id,
+            count( * ) video_num,
+            SUM(digg_count) likes,
+            tbl_goods.goods_name goods_name,
+            tbl_goods.goods_price goods_price,
+            sum(sales) sales
+        FROM
+            `tbl_goods_relate_video`
+            LEFT JOIN tbl_goods ON tbl_goods_relate_video.goods_id = tbl_goods.id
+        WHERE
+            streamer_id = #{streamerId}
+            <if test="fromDay != null and fromDay != ''">
+                and tbl_goods.create_time >= #{fromDay}
+            </if>
+            <if test="keyWord != null and keyWord !=''">
+                and tbl_goods.goods_name like concat( concat( "%", #{keyWord} ), "%" )
+            </if>
+        GROUP BY
+            goods_id
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="getGoodsVideoCount" resultType="java.lang.Long">
+        select
+            count(*)
+        from (select
+        tbl_goods_relate_video.goods_id goods_id
+        FROM
+        `tbl_goods_relate_video`
+        LEFT JOIN tbl_goods ON tbl_goods_relate_video.goods_id = tbl_goods.id
+        WHERE
+        streamer_id = #{streamerId}
+        <if test="fromDay != null and fromDay != ''">
+            and tbl_goods.create_time >= #{fromDay}
+        </if>
+        <if test="keyWord != null and keyWord !=''">
+            and tbl_goods.goods_name like concat( concat( "%", #{keyWord} ), "%" )
+        </if>
+        GROUP BY
+        goods_id) a
+
+    </select>
+
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ittime.linglingbo.modules.streamer.mapper.TblStreamerAppendMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ittime.linglingbo.modules.streamer.model.TblStreamerAppend">
+        <id column="streamer_id" property="streamerId" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+        <result column="deleted" property="deleted" />
+        <result column="industry" property="industry" />
+        <result column="label" property="label" />
+        <result column="introduction" property="introduction" />
+        <result column="contact_information" property="contactInformation" />
+        <result column="cooperation" property="cooperation" />
+        <result column="blog" property="blog" />
+        <result column="account_type" property="accountType" />
+        <result column="blue_v" property="blueV" />
+        <result column="total_fans" property="totalFans" />
+        <result column="total_videos" property="totalVideos" />
+        <result column="total_likes" property="totalLikes" />
+        <result column="total_shares" property="totalShares" />
+        <result column="total_comments" property="totalComments" />
+        <result column="star_index" property="starIndex" />
+        <result column="blue_v_rank_rise" property="blueVRankRise" />
+        <result column="region_rank_rise" property="regionRankRise" />
+        <result column="fans_rank_rise" property="fansRankRise" />
+        <result column="industry_rank_rise" property="industryRankRise" />
+        <result column="month_digg_rank_rise" property="monthDiggRankRise" />
+        <result column="month_works" property="monthWorks" />
+        <result column="month_fans_rank_rise" property="monthFansRankRise" />
+        <result column="portrait_province" property="portraitProvince" />
+        <result column="portrait_city" property="portraitCity" />
+        <result column="portrait_age" property="portraitAge" />
+        <result column="portrait_sex" property="portraitSex" />
+        <result column="live_sales" property="liveSales" />
+        <result column="frequency" property="frequency" />
+    </resultMap>
+
+    <select id="regionRank" resultType="com.ittime.linglingbo.modules.ums.dto.UmsIndustryRankVO">
+        SELECT
+            streamer_id,
+            likes / videos avgLikes,
+            comments / videos avgComments,
+            shares/ videos avgShares,
+            image_url,
+            streamer_name,
+            total_fans,
+            fans_rank_rise ,
+            @rank := @rank + 1 t_rank
+        FROM
+        (
+        SELECT
+            tbl_streamer_daylog.streamer_id,
+            SUM( day_likes ) likes,
+            SUM( day_comments ) comments,
+            SUM( day_shares ) shares,
+            SUM( day_videos) videos,
+            MAX(image_url) image_url,,
+            streamer_name,
+            total_fans,
+            fans_rank_rise
+        FROM
+            `tbl_streamer_daylog`
+            LEFT JOIN ums_admin_streamer ON ums_admin_streamer.id = tbl_streamer_daylog.streamer_id
+            LEFT JOIN tbl_image ON tbl_image.image_id = ums_admin_streamer.image_id
+            LEFT JOIN tbl_streamer_append ON tbl_streamer_append.streamer_id = tbl_streamer_daylog.streamer_id
+        WHERE
+            1=1
+        <if test="keyWord != null and keyWord !=''">
+            and streamer_name like concat( concat( "%", #{keyWord} ), "%" )
+        </if>
+        <if test="province != null and province != ''">
+            and tbl_streamer_append.province = #{province}
+        </if>
+        <if test="city != null and city != ''">
+            and tbl_streamer_append.city = #{city}
+        </if>
+        GROUP BY
+            streamer_id
+        ) a, ( SELECT @rank := 0 ) rank
+        order by
+            total_fans desc
+        <if test="pageSize != null and offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="regionCount" resultType="java.lang.Long">
+        select
+        count(*)
+        from (SELECT
+        1
+        FROM
+        `tbl_streamer_daylog`
+        LEFT JOIN ums_admin_streamer ON ums_admin_streamer.id = tbl_streamer_daylog.streamer_id
+        LEFT JOIN tbl_image ON tbl_image.image_id = ums_admin_streamer.image_id
+        LEFT JOIN tbl_streamer_append ON tbl_streamer_append.streamer_id = tbl_streamer_daylog.streamer_id
+        where
+            1=1
+        <if test="keyWord != null and keyWord !=''">
+            and streamer_name like concat( concat( "%", #{keyWord} ), "%" )
+        </if>
+        <if test="province != null and province != ''">
+            and tbl_streamer_append.province = #{province}
+        </if>
+        <if test="city != null and city != ''">
+            and tbl_streamer_append.city = #{city}
+        </if>
+        GROUP BY
+        tbl_streamer_daylog.streamer_id) a
+    </select>
+
+</mapper>

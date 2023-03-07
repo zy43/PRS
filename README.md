@@ -9,11 +9,11 @@
 
 ## 简介
 
-linglingbo-backend是一款基于SpringBoot+MyBatis-Plus的快速开发脚手架，拥有完整的权限管理功能，可对接Vue前端，开箱即用。
+PRS是一款基于SpringBoot+MyBatis-Plus的快速开发脚手架，拥有完整的权限管理功能，可对接Vue前端，开箱即用。
 
 ## 项目演示
 
-linglingbo-backend项目可无缝对接`mall-admin-web`前端项目，秒变权限管理系统。前端项目地址：https://github.com/macrozheng/mall-admin-web
+PRS项目可无缝对接`mall-admin-web`前端项目，秒变权限管理系统。前端项目地址：https://github.com/macrozheng/mall-admin-web
 
 ![](http://img.macrozheng.com/mall/project/mall_tiny_start_09.png)
 

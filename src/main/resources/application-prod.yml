@@ -18,4 +18,4 @@ logging:
     path: /var/logs
   level:
     root: warn
-    com.ittime.linglingbo: warn
+    com.ittime.PRS: warn

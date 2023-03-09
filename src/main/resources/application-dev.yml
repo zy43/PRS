@@ -15,4 +15,4 @@ spring:
 logging:
   level:
     root: info
-    com.ittime.linglingbo: debug
+    com.ittime.PRS: debug

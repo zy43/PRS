@@ -1,6 +1,6 @@
 spring:
   application:
-    name: linglingbo-backend
+    name: PRS-backend
   profiles:
     active: @profile.active@
   mvc:

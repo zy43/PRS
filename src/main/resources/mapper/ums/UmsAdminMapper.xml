@@ -7,16 +7,11 @@
         <id column="id" property="id" />
         <result column="username" property="username" />
         <result column="password" property="password" />
-        <result column="icon" property="icon" />
-        <result column="tel" property="tel" />
         <result column="nick_name" property="nickName" />
         <result column="note" property="note" />
         <result column="create_time" property="createTime" />
         <result column="login_time" property="loginTime" />
         <result column="status" property="status" />
-        <result column="role_id" property="roleId" />
-        <result column="client_id" property="clientId" />
-        <result column="company_id" property="companyId" />
     </resultMap>
 
     <select id="getAdminIdList" resultType="java.lang.Long">
@@ -31,9 +26,7 @@
     <update id="updateInfo">
         update ums_admin
         <set>
-            <if test="tel != null and tel != ''">
-             tel = #{tel},
-            </if>
+
             <if test="nickName != null and nickName != ''">
             nick_name = #{nickName},
             </if>

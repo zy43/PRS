@@ -114,7 +114,7 @@ public class MyBatisPlusGenerator {
                 .enableChainModel() //开启lombok链式操作
 
                 // 继承基类
-                .superClass("com.ittime.linglingbo.common.entity.BaseEntity")
+                .superClass("com.ittime.PRS.common.entity.BaseEntity")
                 .addSuperEntityColumns("create_time", "modified_time", "deleted")
 
                 // 自动填充字段

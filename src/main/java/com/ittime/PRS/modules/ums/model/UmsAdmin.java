@@ -32,12 +32,6 @@ public class UmsAdmin extends BaseEntity implements Serializable {
 
     private String password;
 
-    @ApiModelProperty(value = "头像")
-    private String icon;
-
-    @ApiModelProperty(value = "手机号")
-    private String tel;
-
     @ApiModelProperty(value = "昵称")
     private String nickName;
 
@@ -55,12 +49,5 @@ public class UmsAdmin extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "角色id")
     private Long roleId;
-
-    @ApiModelProperty(value = "播主/品牌商 id")
-    private Long clientId;
-
-    @ApiModelProperty(value = "所属组织机构")
-    private Long companyId;
-
 
 }

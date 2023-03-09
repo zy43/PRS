@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ittime.PRS.modules.policy.mapper.PolicyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ittime.PRS.modules.policy.model.Policy">
+        <id column="policy_id" property="policyId" />
+        <result column="deleted" property="deleted" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+        <result column="policy_title" property="policyTitle" />
+        <result column="policy_grade" property="policyGrade" />
+        <result column="pub_agency_id" property="pubAgencyId" />
+        <result column="pub_agency" property="pubAgency" />
+        <result column="pub_agency_fullname" property="pubAgencyFullname" />
+        <result column="pub_number" property="pubNumber" />
+        <result column="pub_time" property="pubTime" />
+        <result column="policy_type" property="policyType" />
+        <result column="policy_body" property="policyBody" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="policy_source" property="policySource" />
+        <result column="update_date" property="updateDate" />
+    </resultMap>
+
+</mapper>

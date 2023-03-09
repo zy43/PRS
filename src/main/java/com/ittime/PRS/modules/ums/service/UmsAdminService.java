@@ -14,7 +14,6 @@ import java.util.List;
 
 /**
  * 后台管理员管理Service
- * Created from internet on 2018/4/26.
  */
 public interface UmsAdminService extends IService<UmsAdmin> {
     /**
@@ -99,8 +98,6 @@ public interface UmsAdminService extends IService<UmsAdmin> {
      */
     UmsAdminCacheService getCacheService();
 
-    /**
-     * 对用户实名认证进行审核
-     */
+
     boolean updateInfo(String nickName, String password, String tel, String username);
 }

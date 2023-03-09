@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableTransactionManagement
-@MapperScan({"com.ittime.linglingbo.modules.*.mapper"})
+@MapperScan({"com.ittime.PRS.modules.*.mapper"})
 public class MyBatisConfig {
 
 

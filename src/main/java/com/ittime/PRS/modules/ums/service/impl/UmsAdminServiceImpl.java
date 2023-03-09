@@ -47,16 +47,22 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private UmsAdminLoginLogMapper loginLogMapper;
+
     @Autowired
     private UmsAdminRoleRelationService adminRoleRelationService;
+
     @Autowired
     private UmsRoleMapper roleMapper;
+
     @Autowired
     private UmsResourceMapper resourceMapper;
+
     @Autowired
     private UmsAdminMapper adminMapper;
 

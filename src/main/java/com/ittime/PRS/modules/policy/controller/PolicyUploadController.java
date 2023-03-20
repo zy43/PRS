@@ -2,10 +2,13 @@ package com.ittime.PRS.modules.policy.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.cache.MapCache;
+import com.alibaba.excel.cache.selector.SimpleReadCacheSelector;
+import com.alibaba.excel.event.AnalysisEventListener;
 import com.ittime.PRS.common.api.CommonResult;
 import com.ittime.PRS.modules.policy.mapper.PolicyUploadDAO;
 import com.ittime.PRS.modules.policy.model.excel.PolicyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +34,7 @@ public class PolicyUploadController {
      */
     @PostMapping("/excel")
     @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
     public CommonResult upload(@RequestParam(value = "file") MultipartFile file) throws IOException {
 
         try {

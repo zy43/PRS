@@ -9,7 +9,9 @@ import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.model.vo.ProvinceListVo;
 import com.ittime.PRS.modules.policy.service.PolicyService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,8 @@ import java.util.List;
  * @since 2023-03-09
  */
 @RestController
+@Api(tags = "PolicyController")
+@Tag(name = "PolicyController", description = "政策controller")
 @RequestMapping("/policy")
 public class PolicyController {
 

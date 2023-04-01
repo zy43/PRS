@@ -22,7 +22,7 @@
         <springfox-swagger.version>3.0.0</springfox-swagger.version>
         <velocity.version>2.3</velocity.version>
         <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
-
+        <elasticsearch.version>7.6.1</elasticsearch.version>
         <poi.version>4.1.2</poi.version>
         <poi-ooxml.version>4.1.2</poi-ooxml.version>
     </properties>
@@ -218,6 +218,19 @@
             <artifactId>easyexcel</artifactId>
             <version>3.2.1</version>
         </dependency>
+        <!--elasticsearch-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
+        </dependency>
+
+
 
     </dependencies>
 

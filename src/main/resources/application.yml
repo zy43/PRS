@@ -52,7 +52,12 @@ secure:
       - /admin/info
       - /admin/logout
 minio:
-  endpoint: http://124.222.217.61:9091
+  endpoint: http://124.221.157.240:9090
   accessKey: minioadmin
   secretKey: Josh@123
   bucketName: 00bo-test
+
+elasticSearch:
+  serviceAddr: 127.0.0.1
+  servicePort: 9200
+  serviceProtocol: http

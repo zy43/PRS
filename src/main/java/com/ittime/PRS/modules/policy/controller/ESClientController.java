@@ -1,10 +1,15 @@
 package com.ittime.PRS.modules.policy.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ittime.PRS.common.api.CommonPage;
 import com.ittime.PRS.common.api.CommonResult;
 import com.ittime.PRS.modules.policy.model.Policy;
+import com.ittime.PRS.modules.policy.model.param.PolicyParam;
+import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.ESIndexVo;
+import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.service.ESClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -185,6 +190,25 @@ public class ESClientController {
         // 客户端发送请求，获取响应对象
         DeleteResponse response = restHighLevelClient.delete(request, RequestOptions.DEFAULT);
         return CommonResult.success(response.toString());
+    }
+
+    //---------------------应用------------------
+    @ApiOperation("首页根据类型查找")
+    @PostMapping("/listByType")
+    public CommonResult<List<PolicyVo>> selectByType(@RequestBody PolicyParam param) throws IOException {
+
+        List<PolicyVo> policyVos = esClientService.selectByType(param.getPolicyType());
+        return CommonResult.success(policyVos);
+    }
+
+    @ApiOperation("该类型下政策筛选")
+    @PostMapping("/selectList")
+    public CommonResult<List<PolicyVo>> list(@RequestBody SelectParam param,
+                                                   @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize,
+                                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) throws IOException {
+        List<PolicyVo> page = esClientService.list(param, pageSize, pageNum);
+        return CommonResult.success(page);
+
     }
 
 

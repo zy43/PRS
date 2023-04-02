@@ -81,5 +81,23 @@ public class Policy extends BaseEntity {
     @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
     private LocalDate updateDate;
 
-
+    @Override
+    public String toString() {
+        return "Policy{" +
+                "policyId=" + policyId +
+                ", policyTitle='" + policyTitle + '\'' +
+                ", policyGrade='" + policyGrade + '\'' +
+                ", pubAgencyId='" + pubAgencyId + '\'' +
+                ", pubAgency='" + pubAgency + '\'' +
+                ", pubAgencyFullname='" + pubAgencyFullname + '\'' +
+                ", pubNumber='" + pubNumber + '\'' +
+                ", pubTime=" + pubTime +
+                ", policyType='" + policyType + '\'' +
+                ", policyBody='" + policyBody + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", policySource='" + policySource + '\'' +
+                ", updateDate=" + updateDate +
+                '}';
+    }
 }

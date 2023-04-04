@@ -13,6 +13,9 @@ import java.util.Date;
  **/
 @Data
 public class PolicyVo {
+    @ApiModelProperty("政策ID")
+    private Long policyId;
+
     @ApiModelProperty("省份")
     private String province;
 

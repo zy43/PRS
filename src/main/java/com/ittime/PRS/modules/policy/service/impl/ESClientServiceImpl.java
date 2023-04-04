@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ittime.PRS.modules.policy.model.Policy;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
+import com.ittime.PRS.modules.policy.model.vo.PolicyDetailVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.service.ESClientService;
 import org.elasticsearch.action.search.SearchRequest;
@@ -28,10 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -118,7 +116,7 @@ public class ESClientServiceImpl implements ESClientService {
             }
             System.out.println(total);
         }
-        restHighLevelClient.close();
+        // restHighLevelClient.close();
         return policyVos;
     }
 
@@ -206,6 +204,75 @@ public class ESClientServiceImpl implements ESClientService {
             System.out.println(total);
         }
         return policyVos;
+    }
+
+    @Override
+    public List<PolicyVo> listAll(String keyWord) throws IOException {
+        ArrayList<PolicyVo> policyVos = new ArrayList<>();
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        Map<String,Float> fields = new HashMap();
+        fields.put("policy_title", 3.0f);
+        fields.put("policy_body", 2.0f);
+        fields.put("policy_source", 1.5f);
+        fields.put("province", 1.5f);
+        searchSourceBuilder.query(QueryBuilders.multiMatchQuery(keyWord).minimumShouldMatch("50%").fields(fields));
+        //构建查询请求对象，入参为索引
+        SearchRequest searchRequest = new SearchRequest("policy");
+        //向搜索请求对象中配置搜索源
+        searchRequest.source(searchSourceBuilder);
+        // 执行搜索,向ES发起http请求
+        SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+
+        if (RestStatus.OK.equals(response.status())) {
+            long total = response.getHits().getTotalHits().value; //检索到符合条件的总数
+            SearchHit[] hits = response.getHits().getHits();
+            //未指定size，默认查询的是10条
+            for (SearchHit hit : hits) {
+                String index = hit.getIndex();//索引名称
+                String id = hit.getId(); //文档id
+                Policy policy = JSON.parseObject(hit.getSourceAsString(), Policy.class); //文档内容
+                System.out.println(policy.toString());
+                PolicyVo policyVo = new PolicyVo();
+                BeanUtils.copyProperties(policy, policyVo);
+                policyVos.add(policyVo);
+            }
+            System.out.println(total);
+        }
+
+        return policyVos;
+    }
+
+    /**
+     * 查看详情
+     * @param id
+     * @return
+     */
+    @Override
+    public PolicyDetailVo getById(Long id) throws IOException {
+        PolicyDetailVo policyDetailVo = new PolicyDetailVo();
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        //  termQuery只能匹配一个值，第一个入参为字段名称，第二个参数为传入的值，相当于sql中的=
+        searchSourceBuilder.query(QueryBuilders.termQuery("policy_id", id));
+        //构建查询请求对象，入参为索引
+        SearchRequest searchRequest = new SearchRequest("policy");
+        //向搜索请求对象中配置搜索源
+        searchRequest.source(searchSourceBuilder);
+        // 执行搜索,向ES发起http请求
+        SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+
+        if (RestStatus.OK.equals(response.status())) {
+            long total = response.getHits().getTotalHits().value; //检索到符合条件的总数
+            SearchHit[] hits = response.getHits().getHits();
+            //未指定size，默认查询的是10条
+            for (SearchHit hit : hits) {
+                Policy policy = JSON.parseObject(hit.getSourceAsString(), Policy.class); //文档内容
+                System.out.println(policy.toString());
+                BeanUtils.copyProperties(policy, policyDetailVo);
+            }
+            System.out.println(total);
+        }
+        // restHighLevelClient.close();
+        return policyDetailVo;
     }
 
 }

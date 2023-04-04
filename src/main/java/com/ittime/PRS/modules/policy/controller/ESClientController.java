@@ -9,10 +9,12 @@ import com.ittime.PRS.modules.policy.model.Policy;
 import com.ittime.PRS.modules.policy.model.param.PolicyParam;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.ESIndexVo;
+import com.ittime.PRS.modules.policy.model.vo.PolicyDetailVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.service.ESClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.checkerframework.checker.units.qual.C;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -193,6 +195,14 @@ public class ESClientController {
     }
 
     //---------------------应用------------------
+    @ApiOperation("首页加权重全局搜索")
+    @PostMapping()
+    public CommonResult<List<PolicyVo>> list(@RequestBody PolicyParam param) throws IOException {
+
+        List<PolicyVo> policyVos = esClientService.listAll(param.getKeyWord());
+        return CommonResult.success(policyVos);
+    }
+
     @ApiOperation("首页根据类型查找")
     @PostMapping("/listByType")
     public CommonResult<List<PolicyVo>> selectByType(@RequestBody PolicyParam param) throws IOException {
@@ -209,6 +219,14 @@ public class ESClientController {
         List<PolicyVo> page = esClientService.list(param, pageSize, pageNum);
         return CommonResult.success(page);
 
+    }
+
+    @ApiOperation("查看政策详情")
+    @PostMapping("/getById/{id}")
+    public CommonResult<PolicyDetailVo> getById(@PathVariable(value = "id") Long id) throws IOException {
+
+        PolicyDetailVo policyDetailVo = esClientService.getById(id);
+        return CommonResult.success(policyDetailVo);
     }
 
 

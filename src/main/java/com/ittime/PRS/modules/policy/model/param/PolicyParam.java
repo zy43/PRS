@@ -13,4 +13,7 @@ public class PolicyParam {
 
     @ApiModelProperty("政策类型")
     private String policyType;
+
+    @ApiModelProperty("关键词")
+    private String keyWord;
 }

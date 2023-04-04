@@ -2,6 +2,7 @@ package com.ittime.PRS.modules.policy.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
+import com.ittime.PRS.modules.policy.model.vo.PolicyDetailVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import org.elasticsearch.action.search.SearchResponse;
 
@@ -35,4 +36,18 @@ public interface ESClientService {
      * @return
      */
     List<PolicyVo> list(SelectParam param, Integer pageSize, Integer pageNum) throws IOException;
+
+    /**
+     * 首页权重全局搜索
+     * @param keyWord
+     * @return
+     */
+    List<PolicyVo> listAll(String keyWord) throws IOException;
+
+    /**
+     * 查看详情
+     * @param id
+     * @return
+     */
+    PolicyDetailVo getById(Long id) throws IOException;
 }

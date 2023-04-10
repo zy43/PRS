@@ -50,4 +50,6 @@ public interface ESClientService {
      * @return
      */
     PolicyDetailVo getById(Long id) throws IOException;
+
+    SearchResponse getFilterList(String indexName) throws IOException;
 }

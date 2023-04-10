@@ -89,19 +89,14 @@ public class ESClientController {
         return CommonResult.success(result,"took: " + response.getTook()+"total: " + hits.getTotalHits());
     }
 
-    @ApiOperation("分页查询")
-    @GetMapping("/getPageList")
-    public CommonResult<List<Map<String, Object>>> getPageList(String indexName,String key,String value) throws IOException {
-
-        SearchResponse response = esClientService.getTermList(indexName,key,value);
+    @ApiOperation("过滤字段")
+    @GetMapping("/getFilter")
+    public CommonResult<List<Map<String, Object>>> getFilter(String indexName) throws IOException {
+        SearchResponse response = esClientService.getFilterList(indexName);
         SearchHits hits = response.getHits();
         List<Map<String, Object>> result = Arrays.stream(hits.getHits()).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
         return CommonResult.success(result,"took: " + response.getTook()+"total: " + hits.getTotalHits());
     }
-
-
-
-
 
     //-------------------index---------------------
     @ApiOperation("索引创建")

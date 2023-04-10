@@ -275,4 +275,25 @@ public class ESClientServiceImpl implements ESClientService {
         return policyDetailVo;
     }
 
+    @Override
+    public SearchResponse getFilterList(String indexName) throws IOException {
+        // 创建搜索请求对象
+        SearchRequest request = new SearchRequest();
+        request.indices(indexName);
+
+        // 构建查询的请求体
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        // 查询所有数据
+        sourceBuilder.query(QueryBuilders.matchAllQuery());
+
+        // 查询字段过滤
+        String[] excludes = {};
+        String[] includes = {"policy_id", "policyTitle"};
+        sourceBuilder.fetchSource(includes, excludes);
+
+        request.source(sourceBuilder);
+        SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+        return response;
+    }
+
 }

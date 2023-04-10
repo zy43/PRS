@@ -39,7 +39,7 @@ public class UmsAdminParam extends BaseEntity {
     @ApiModelProperty(value = "所属企业id")
     private String companyId;
 
-    @ApiModelProperty(value = "角色（streamer/owner/root）")
+    @ApiModelProperty(value = "角色（user/root）")
     private String role;
 
 }

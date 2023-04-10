@@ -7,9 +7,7 @@ public enum RoleEnum {
     // 为防止魔法值
 
     ROOT(5, "超级管理员"),
-    OPERATOR(8, "运营人员"),
-    STREAMER(9, "播主"),
-    OWNER(10, "品牌方");
+    USER(6, "用户");
 
     @EnumValue
     private final long roleId;

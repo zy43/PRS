@@ -105,27 +105,13 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         Long roleId = null;
         if (StrUtil.isNotEmpty(role)) {
             switch (role) {
-                case "streamer":
-                    // 主播、MCN
-                   /* roleId = RoleEnum.STREAMER.getValue();
-                    UmsAdminStreamer streamer = new UmsAdminStreamer();
-                    streamerMapper.insert(streamer);
-                    umsAdmin.setClientId(streamer.getId());*/
-                    break;
-                case "owner":
-                    // 品牌商、政府
-                   /* roleId = RoleEnum.OWNER.getValue();
-                    UmsAdminOwner owner = new UmsAdminOwner();
-                    ownerMapper.insert(owner);
-                    umsAdmin.setClientId(owner.getId());*/
-                    break;
                 case "root":
                     // 最高权限管理员
                     roleId = RoleEnum.ROOT.getValue();
                     break;
-                case "operator":
-                    // 运营人员
-                    roleId = RoleEnum.OPERATOR.getValue();
+                case "user":
+                    // 用户
+                    roleId = RoleEnum.USER.getValue();
                     break;
                 default:
             }

@@ -10,16 +10,34 @@ import com.ittime.PRS.modules.policy.model.Policy;
 import com.ittime.PRS.modules.policy.mapper.PolicyMapper;
 import com.ittime.PRS.modules.policy.model.param.PolicyParam;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
+import com.ittime.PRS.modules.policy.model.vo.CountVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.model.vo.ProvinceListVo;
 import com.ittime.PRS.modules.policy.service.PolicyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.lucene.search.TotalHits;
 import org.checkerframework.checker.units.qual.A;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.metrics.Cardinality;
+import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.collapse.CollapseBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +56,9 @@ public class PolicyServiceImpl extends ServiceImpl<PolicyMapper, Policy> impleme
 
     @Autowired
     private PolicyMapper policyMapper;
+
+    @Autowired
+    private RestHighLevelClient restHighLevelClient;
 
 
 
@@ -131,5 +152,76 @@ public class PolicyServiceImpl extends ServiceImpl<PolicyMapper, Policy> impleme
         }
 
         return provinceListVos;
+    }
+
+    @Override
+    public CountVo getPolicyCount() throws IOException {
+        CountVo countVo = new CountVo();
+
+        Integer countryGradeCount = getCountryGradeCount();
+        countVo.setCountryGradeCount(countryGradeCount);
+
+        Integer allPolicyCount = getAllPolicyCount();
+        countVo.setPolicyCount(allPolicyCount);
+
+        Integer provinceGradeCount = getProvinceGradeCount();
+        countVo.setProvinceGradeCount(provinceGradeCount);
+
+
+        QueryWrapper<Policy> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("DISTINCT policy_type");
+        Long policyTypeCount = baseMapper.selectCount(queryWrapper);
+        countVo.setPolicyTypeCount(policyTypeCount.intValue());
+        return countVo;
+    }
+
+    public Integer getCountryGradeCount() throws IOException {
+        SearchRequest request = new SearchRequest();
+        request.indices("policy");
+        // 构建查询的请求体
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        // 查询所有数据
+        sourceBuilder.query(QueryBuilders.termQuery("policy_grade", "国家级"));
+        //超过一万时 如果需要精确统计设置为true
+        sourceBuilder.trackTotalHits(true);
+        request.source(sourceBuilder);
+        SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+        Long count = response.getHits().getTotalHits().value;
+        Integer countryGradeCount = count.intValue();
+        return countryGradeCount;
+    }
+
+    public Integer getAllPolicyCount() throws IOException {
+        SearchRequest request = new SearchRequest();
+        request.indices("policy");
+        // 构建查询的请求体
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        // 查询所有数据
+        sourceBuilder.query(QueryBuilders.matchAllQuery());
+        //超过一万时 如果需要精确统计设置为true
+        sourceBuilder.trackTotalHits(true);
+        request.source(sourceBuilder);
+        SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+        Long count = response.getHits().getTotalHits().value;
+        Integer allPolicyCount = count.intValue();
+        return allPolicyCount;
+    }
+
+    public Integer getProvinceGradeCount() throws IOException {
+        SearchRequest request = new SearchRequest();
+        request.indices("policy");
+        // 构建查询的请求体
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
+        boolQuery.must(QueryBuilders.existsQuery("province"));
+        sourceBuilder.query(boolQuery);
+        //超过一万时 如果需要精确统计设置为true
+        sourceBuilder.trackTotalHits(true);
+        request.source(sourceBuilder);
+        SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+        Long count = response.getHits().getTotalHits().value;
+        Integer provinceGradeCount = count.intValue();
+        return provinceGradeCount;
     }
 }

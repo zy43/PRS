@@ -6,6 +6,7 @@ import com.ittime.PRS.common.api.CommonPage;
 import com.ittime.PRS.common.api.CommonResult;
 import com.ittime.PRS.modules.policy.model.param.PolicyParam;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
+import com.ittime.PRS.modules.policy.model.vo.CountVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.model.vo.ProvinceListVo;
 import com.ittime.PRS.modules.policy.service.PolicyService;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -59,6 +61,14 @@ public class PolicyController {
 
         List<ProvinceListVo> provinceList = policyService.getProvinceList();
         return CommonResult.success(provinceList);
+    }
+
+    @ApiOperation("4种政策数据统计信息")
+    @PostMapping("/getPolicyCount")
+    public CommonResult<CountVo> getPolicyCount() throws IOException {
+
+        CountVo countVo = policyService.getPolicyCount();
+        return CommonResult.success(countVo);
     }
 }
 

@@ -6,9 +6,11 @@ import com.ittime.PRS.modules.policy.model.Policy;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ittime.PRS.modules.policy.model.param.PolicyParam;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
+import com.ittime.PRS.modules.policy.model.vo.CountVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.model.vo.ProvinceListVo;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -42,4 +44,10 @@ public interface PolicyService extends IService<Policy> {
      * @return
      */
     List<ProvinceListVo> getProvinceList();
+
+    /**
+     * 统计数据
+     * @return
+     */
+    CountVo getPolicyCount() throws IOException;
 }

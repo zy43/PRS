@@ -58,6 +58,6 @@ minio:
   bucketName: 00bo-test
 
 elasticSearch:
-  serviceAddr: 127.0.0.1
+  serviceAddr: 124.221.157.240
   servicePort: 9200
   serviceProtocol: http

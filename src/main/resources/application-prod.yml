@@ -1,17 +1,17 @@
 server:
-  port: 6088
+  port: 8821
 
 spring:
   datasource:
     username: root
     password: Qinkang368
-    url: jdbc:mysql://sh-cynosdbmysql-grp-gt0q8bdg.sql.tencentcdb.com:27950/linglingbo?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:mysql://sh-cynosdbmysql-grp-gt0q8bdg.sql.tencentcdb.com:27950/PRS?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+  # Redis数据源
   redis:
-    database: 0 # Redis数据库索引（默认为0）
-    host: 172.17.0.6
+    host: 172.17.0.4
     port: 6379
     timeout: 6000
-    password: null
+    password: 123456
 
 logging:
   file:

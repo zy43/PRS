@@ -55,6 +55,7 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
         return null;
     }
 
+
     @Override
     public boolean supports(Class<?> aClass) {
         return true;

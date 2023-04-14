@@ -9,6 +9,7 @@ import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.CountVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.model.vo.ProvinceListVo;
+import com.ittime.PRS.modules.policy.model.vo.SimilarityVo;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,4 +51,11 @@ public interface PolicyService extends IService<Policy> {
      * @return
      */
     CountVo getPolicyCount() throws IOException;
+
+    /**
+     * 首页推荐政策
+     * @param id
+     * @return
+     */
+    List<SimilarityVo> getSimilarityPolicy(Long id) throws IOException;
 }

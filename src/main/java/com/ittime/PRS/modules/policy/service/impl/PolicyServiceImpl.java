@@ -2,17 +2,23 @@ package com.ittime.PRS.modules.policy.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ittime.PRS.common.entity.BaseEntity;
+import com.ittime.PRS.modules.collection.mapper.CollectionMapper;
+import com.ittime.PRS.modules.collection.model.Collection;
 import com.ittime.PRS.modules.policy.model.Policy;
 import com.ittime.PRS.modules.policy.mapper.PolicyMapper;
+import com.ittime.PRS.modules.policy.model.PolicySimilarity;
 import com.ittime.PRS.modules.policy.model.param.PolicyParam;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.CountVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.model.vo.ProvinceListVo;
+import com.ittime.PRS.modules.policy.model.vo.SimilarityVo;
 import com.ittime.PRS.modules.policy.service.PolicyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.lucene.search.TotalHits;
@@ -24,6 +30,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -32,15 +40,18 @@ import org.elasticsearch.search.aggregations.metrics.Cardinality;
 import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.collapse.CollapseBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -59,6 +70,9 @@ public class PolicyServiceImpl extends ServiceImpl<PolicyMapper, Policy> impleme
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+    @Autowired
+    private CollectionMapper collectionMapper;
 
 
 
@@ -175,6 +189,8 @@ public class PolicyServiceImpl extends ServiceImpl<PolicyMapper, Policy> impleme
         return countVo;
     }
 
+
+
     public Integer getCountryGradeCount() throws IOException {
         SearchRequest request = new SearchRequest();
         request.indices("policy");
@@ -223,5 +239,71 @@ public class PolicyServiceImpl extends ServiceImpl<PolicyMapper, Policy> impleme
         Long count = response.getHits().getTotalHits().value;
         Integer provinceGradeCount = count.intValue();
         return provinceGradeCount;
+    }
+
+
+    @Override
+    public List<SimilarityVo> getSimilarityPolicy(Long id) throws IOException {
+        ArrayList<SimilarityVo> similarityVos = new ArrayList<>();
+        LambdaQueryWrapper<Collection> collectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        collectionLambdaQueryWrapper.eq(Collection::getUserId,id);
+        collectionLambdaQueryWrapper.orderByDesc(BaseEntity::getCreateTime);
+        List<Collection> collectionList = collectionMapper.selectList(collectionLambdaQueryWrapper);
+        //用户没有收藏
+        if(collectionList.isEmpty()){
+            SecureRandom secureRandom = new SecureRandom();
+            secureRandom.setSeed(10000L);
+
+            SearchRequest request = new SearchRequest();
+            request.indices("policy");
+            // 构建查询的请求体
+            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+            // 查询所有数据
+            sourceBuilder.query(QueryBuilders.matchAllQuery());
+            int num = (int)(Math.random()*300);
+            System.out.println(num);
+            sourceBuilder.from(secureRandom.nextInt(num));
+            sourceBuilder.size(20);
+            request.source(sourceBuilder);
+            SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+            if (RestStatus.OK.equals(response.status())) {
+                SearchHits hits = response.getHits();
+                for (SearchHit hit : hits.getHits()) {
+                    SimilarityVo similarityVo = new SimilarityVo();
+                    Policy policy = JSON.parseObject(hit.getSourceAsString(), Policy.class); //文档内容
+                    BeanUtils.copyProperties(policy,similarityVo);
+                    similarityVos.add(similarityVo);
+                }
+            }
+            return similarityVos;
+        }
+        //根据收藏推荐
+        List<Long> policyIdList = collectionList.stream().map(collection -> collection.getPolicyId()).collect(Collectors.toList());
+        for (int i = 0; i < policyIdList.size() && i<5; i++) {
+            Long policyId = policyIdList.get(i);
+            SearchRequest request = new SearchRequest();
+            request.indices("policy_priority");
+            // 构建查询的请求体
+            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+            // 查询所有数据
+            sourceBuilder.query(QueryBuilders.termQuery("policy1", policyId.toString()));
+            //sourceBuilder.sort("similarity",SortOrder.DESC);
+
+            request.source(sourceBuilder);
+            SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+            SearchHits hits = response.getHits();
+            for (SearchHit hit : hits.getHits()) {
+                SimilarityVo similarityVo = new SimilarityVo();
+                PolicySimilarity policySimilarity = JSON.parseObject(hit.getSourceAsString(), PolicySimilarity.class);//文档内容
+
+                LambdaQueryWrapper<Policy> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+                lambdaQueryWrapper.eq(Policy::getPolicyId,policySimilarity.getPolicy2());
+                Policy policy = baseMapper.selectOne(lambdaQueryWrapper);
+                BeanUtils.copyProperties(policy,similarityVo);
+                similarityVos.add(similarityVo);
+            }
+        }
+
+        return similarityVos;
     }
 }

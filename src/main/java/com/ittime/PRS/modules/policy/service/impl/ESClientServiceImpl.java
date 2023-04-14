@@ -135,8 +135,8 @@ public class ESClientServiceImpl implements ESClientService {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         // 高亮显示
         HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.preTags("&lt;span style='color:red'&gt;");//前缀后缀
-        highlightBuilder.postTags("&lt;/span&gt;");
+        highlightBuilder.preTags("span style='color:red'>");//前缀后缀
+        highlightBuilder.postTags("</span>");
         // 布尔查询
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         // 定义高亮数组
@@ -166,6 +166,8 @@ public class ESClientServiceImpl implements ESClientService {
 
         highlightBuilder.requireFieldMatch(true);//是否搜索字段外的字段要高亮
         searchSourceBuilder.highlighter(highlightBuilder);
+        searchSourceBuilder.from(0);
+        searchSourceBuilder.size(1000);
         //构建查询请求对象，入参为索引
         SearchRequest searchRequest = new SearchRequest("policy");
         //向搜索请求对象中配置搜索源
@@ -219,7 +221,7 @@ public class ESClientServiceImpl implements ESClientService {
         fields.put("province", 1.5f);
         searchSourceBuilder.query(QueryBuilders.multiMatchQuery(keyWord).minimumShouldMatch("50%").fields(fields));
         searchSourceBuilder.from(0);
-        searchSourceBuilder.size(50);
+        searchSourceBuilder.size(1000);
         //构建查询请求对象，入参为索引
         SearchRequest searchRequest = new SearchRequest("policy");
         //向搜索请求对象中配置搜索源

@@ -7,6 +7,7 @@ import org.elasticsearch.action.search.SearchResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhl129
@@ -36,7 +37,7 @@ public interface ESClientService {
      * @param pageSize
      * @return
      */
-    List<PolicyVo> list(SelectParam param, int current, int pageSize) throws IOException;
+    Map<String,Object> list(SelectParam param, int current, int pageSize) throws IOException;
 
     /**
      * 首页权重全局搜索
@@ -46,7 +47,7 @@ public interface ESClientService {
      * @param pageSize
      * @return
      */
-    List<PolicyVo> listAll(String keyWord, int current, int pageSize) throws IOException;
+    Map<String,Object> listAll(String keyWord, int current, int pageSize) throws IOException;
 
     /**
      * 查看详情

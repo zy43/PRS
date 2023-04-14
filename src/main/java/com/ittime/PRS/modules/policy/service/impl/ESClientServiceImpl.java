@@ -130,7 +130,8 @@ public class ESClientServiceImpl implements ESClientService {
      * @return
      */
     @Override
-    public List<PolicyVo> list(SelectParam param, int current, int pageSize) throws IOException {
+    public Map<String,Object> list(SelectParam param, int current, int pageSize) throws IOException {
+        HashMap<String, Object> map = new HashMap<>();
         ArrayList<PolicyVo> policyVos = new ArrayList<>();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         // 高亮显示
@@ -184,6 +185,7 @@ public class ESClientServiceImpl implements ESClientService {
 
         if (RestStatus.OK.equals(response.status())) {
             long total = response.getHits().getTotalHits().value; //检索到符合条件的总数
+            map.put("total", total);
             SearchHit[] hits = response.getHits().getHits();
             //未指定size，默认查询的是10条
             for (SearchHit hit : hits) {
@@ -214,11 +216,13 @@ public class ESClientServiceImpl implements ESClientService {
             }
             System.out.println(total);
         }
-        return policyVos;
+        map.put("policyVos", policyVos);
+        return map;
     }
 
     @Override
-    public List<PolicyVo> listAll(String keyWord, int current, int pageSize) throws IOException {
+    public Map<String,Object> listAll(String keyWord, int current, int pageSize) throws IOException {
+        HashMap<String, Object> map = new HashMap<>();
         ArrayList<PolicyVo> policyVos = new ArrayList<>();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         Map<String,Float> fields = new HashMap();
@@ -241,6 +245,7 @@ public class ESClientServiceImpl implements ESClientService {
 
         if (RestStatus.OK.equals(response.status())) {
             long total = response.getHits().getTotalHits().value; //检索到符合条件的总数
+            map.put("total", total);
             SearchHit[] hits = response.getHits().getHits();
             //未指定size，默认查询的是10条
             for (SearchHit hit : hits) {
@@ -254,8 +259,8 @@ public class ESClientServiceImpl implements ESClientService {
             }
             System.out.println(total);
         }
-
-        return policyVos;
+        map.put("policyVos", policyVos);
+        return map;
     }
 
     /**

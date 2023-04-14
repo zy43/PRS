@@ -30,19 +30,23 @@ public interface ESClientService {
 
     /**
      * 该类型下政策筛选
+     *
      * @param param
+     * @param current
      * @param pageSize
-     * @param pageNum
      * @return
      */
-    List<PolicyVo> list(SelectParam param, Integer pageSize, Integer pageNum) throws IOException;
+    List<PolicyVo> list(SelectParam param, int current, int pageSize) throws IOException;
 
     /**
      * 首页权重全局搜索
+     *
      * @param keyWord
+     * @param current
+     * @param pageSize
      * @return
      */
-    List<PolicyVo> listAll(String keyWord) throws IOException;
+    List<PolicyVo> listAll(String keyWord, int current, int pageSize) throws IOException;
 
     /**
      * 查看详情

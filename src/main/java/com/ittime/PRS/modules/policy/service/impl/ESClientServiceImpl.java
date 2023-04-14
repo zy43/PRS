@@ -124,24 +124,28 @@ public class ESClientServiceImpl implements ESClientService {
 
     /**
      * 该类型下政策筛选
+     *
      * @param param
      * @param pageSize
-     * @param pageNum
      * @return
      */
     @Override
-    public List<PolicyVo> list(SelectParam param, Integer pageSize, Integer pageNum) throws IOException {
+    public List<PolicyVo> list(SelectParam param, int current, int pageSize) throws IOException {
         ArrayList<PolicyVo> policyVos = new ArrayList<>();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         // 高亮显示
         HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.preTags("<span style='color:red'>");//前缀后缀
+        highlightBuilder.preTags("<span style='background-color:yellow'>");//前缀后缀
         highlightBuilder.postTags("</span>");
         // 布尔查询
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         // 定义高亮数组
         List<String> highlights = new ArrayList<>();
-        builder.filter(QueryBuilders.termQuery("policy_type.keyword", param.getPolicyType()));
+        // 直接点击政策文件和从更多中进入
+        if(StrUtil.isNotBlank(param.getPolicyType())){
+            builder.filter(QueryBuilders.termQuery("policy_type.keyword", param.getPolicyType()));
+
+        }
         if(StrUtil.isNotBlank(param.getGrade())){
             builder.filter(QueryBuilders.termQuery("policy_grade", param.getGrade()));
             highlightBuilder.field("policy_grade");
@@ -166,10 +170,13 @@ public class ESClientServiceImpl implements ESClientService {
 
         highlightBuilder.requireFieldMatch(true);//是否搜索字段外的字段要高亮
         searchSourceBuilder.highlighter(highlightBuilder);
-        searchSourceBuilder.from(0);
-        searchSourceBuilder.size(500);
         //构建查询请求对象，入参为索引
         SearchRequest searchRequest = new SearchRequest("policy");
+        //起始位置
+        searchSourceBuilder.from((current - 1) * pageSize);
+        //查询数量
+        searchSourceBuilder.size(pageSize);
+        searchSourceBuilder.trackTotalHits(true);
         //向搜索请求对象中配置搜索源
         searchRequest.source(searchSourceBuilder);
         // 执行搜索,向ES发起http请求
@@ -211,7 +218,7 @@ public class ESClientServiceImpl implements ESClientService {
     }
 
     @Override
-    public List<PolicyVo> listAll(String keyWord) throws IOException {
+    public List<PolicyVo> listAll(String keyWord, int current, int pageSize) throws IOException {
         ArrayList<PolicyVo> policyVos = new ArrayList<>();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         Map<String,Float> fields = new HashMap();
@@ -220,10 +227,13 @@ public class ESClientServiceImpl implements ESClientService {
         fields.put("policy_source", 1.5f);
         fields.put("province", 1.5f);
         searchSourceBuilder.query(QueryBuilders.multiMatchQuery(keyWord).minimumShouldMatch("50%").fields(fields));
-        searchSourceBuilder.from(0);
-        searchSourceBuilder.size(500);
         //构建查询请求对象，入参为索引
         SearchRequest searchRequest = new SearchRequest("policy");
+        //起始位置
+        searchSourceBuilder.from((current - 1) * pageSize);
+        //查询数量
+        searchSourceBuilder.size(pageSize);
+        searchSourceBuilder.trackTotalHits(true);
         //向搜索请求对象中配置搜索源
         searchRequest.source(searchSourceBuilder);
         // 执行搜索,向ES发起http请求

@@ -192,9 +192,11 @@ public class ESClientController {
     //---------------------应用------------------
     @ApiOperation("首页加权重全局搜索")
     @PostMapping()
-    public CommonResult<List<PolicyVo>> list(@RequestBody PolicyParam param) throws IOException {
+    public CommonResult<List<PolicyVo>> list(@RequestBody PolicyParam param,
+                                             @RequestParam(name = "current", defaultValue = "1") int current ,
+                                             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) throws IOException {
 
-        List<PolicyVo> policyVos = esClientService.listAll(param.getKeyWord());
+        List<PolicyVo> policyVos = esClientService.listAll(param.getKeyWord(), current, pageSize);
         return CommonResult.success(policyVos);
     }
 
@@ -209,9 +211,9 @@ public class ESClientController {
     @ApiOperation("该类型下政策筛选")
     @PostMapping("/selectList")
     public CommonResult<List<PolicyVo>> list(@RequestBody SelectParam param,
-                                                   @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize,
-                                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) throws IOException {
-        List<PolicyVo> page = esClientService.list(param, pageSize, pageNum);
+                                             @RequestParam(name = "current", defaultValue = "1") int current,
+                                             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) throws IOException {
+        List<PolicyVo> page = esClientService.list(param, current, pageSize);
         return CommonResult.success(page);
 
     }

@@ -51,8 +51,7 @@ secure:
       - /admin/register
       - /admin/info
       - /admin/logout
-      - /policy/getPolicyCount
-      - /policy/getProvinceList
+      - /policy/**
       - /es
       - /es/listByType
       - /es/selectList

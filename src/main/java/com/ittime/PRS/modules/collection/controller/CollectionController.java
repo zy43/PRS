@@ -72,6 +72,8 @@ public class CollectionController {
         String name = principal.getName();
         UmsAdmin user = umsAdminService.getAdminByUsername(name);
         IPage<CollectionVo> result = collectionService.pageList(user.getId(),pageSize,pageNum);
+
+        if(result == null) return CommonResult.success(null);
         return CommonResult.success(CommonPage.restPage(result));
 
     }

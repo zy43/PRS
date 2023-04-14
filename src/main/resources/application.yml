@@ -51,6 +51,11 @@ secure:
       - /admin/register
       - /admin/info
       - /admin/logout
+      - /policy/getPolicyCount
+      - /policy/getProvinceList
+      - /es
+      - /es/listByType
+      - /es/selectList
 minio:
   endpoint: http://124.221.157.240:9090
   accessKey: minioadmin

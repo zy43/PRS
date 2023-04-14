@@ -225,6 +225,17 @@ public class ESClientServiceImpl implements ESClientService {
         HashMap<String, Object> map = new HashMap<>();
         ArrayList<PolicyVo> policyVos = new ArrayList<>();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        // 高亮显示
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.preTags("<span style='background-color:yellow'>");//前缀后缀
+        highlightBuilder.postTags("</span>");
+        // 定义高亮数组
+        List<String> highlights = Arrays.asList("policy_title","policy_body","policy_source","province");
+        highlightBuilder.field("policy_title");
+        highlightBuilder.field("policy_body");
+        highlightBuilder.field("policy_source");
+        highlightBuilder.field("province");
+        // 设置权重
         Map<String,Float> fields = new HashMap();
         fields.put("policy_title", 3.0f);
         fields.put("policy_body", 2.0f);
@@ -233,6 +244,9 @@ public class ESClientServiceImpl implements ESClientService {
         searchSourceBuilder.query(QueryBuilders.multiMatchQuery(keyWord).minimumShouldMatch("50%").fields(fields));
         //构建查询请求对象，入参为索引
         SearchRequest searchRequest = new SearchRequest("policy");
+        //高亮设置
+        highlightBuilder.requireFieldMatch(true);//是否搜索字段外的字段要高亮
+        searchSourceBuilder.highlighter(highlightBuilder);
         //起始位置
         searchSourceBuilder.from((current - 1) * pageSize);
         //查询数量
@@ -249,10 +263,27 @@ public class ESClientServiceImpl implements ESClientService {
             SearchHit[] hits = response.getHits().getHits();
             //未指定size，默认查询的是10条
             for (SearchHit hit : hits) {
-                String index = hit.getIndex();//索引名称
-                String id = hit.getId(); //文档id
-                Policy policy = JSON.parseObject(hit.getSourceAsString(), Policy.class); //文档内容
-                System.out.println(policy.toString());
+                //原来的结果
+                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+                //获取高亮字段
+                Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+                System.out.println("=========="+highlightFields);
+                // 遍历需要高亮的字段
+                highlights.forEach(highlight->{
+                    HighlightField content = highlightFields.get(highlight);
+                    System.out.println("==content=="+content);
+                    //将原来的字段替换为高亮字段即可
+                    if (content!=null){
+                        Text[] fragments = content.fragments();
+                        String newTitle = "";
+                        for (Text text : fragments) {
+                            newTitle +=text;
+                        }
+                        sourceAsMap.put(highlight,newTitle);//替换掉原来的内容
+                    }
+                });
+                Policy policy = JSON.parseObject(JSONArray.toJSONString(sourceAsMap), Policy.class); //文档内容
+                // System.out.println(policy.toString());
                 PolicyVo policyVo = new PolicyVo();
                 BeanUtils.copyProperties(policy, policyVo);
                 policyVos.add(policyVo);

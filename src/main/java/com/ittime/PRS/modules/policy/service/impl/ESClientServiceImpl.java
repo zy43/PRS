@@ -3,8 +3,6 @@ package com.ittime.PRS.modules.policy.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ittime.PRS.modules.policy.model.Policy;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.PolicyDetailVo;
@@ -19,7 +17,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -30,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author zhl129
@@ -83,15 +79,21 @@ public class ESClientServiceImpl implements ESClientService {
 
     /**
      * 根据类型查找
+     *
      * @param policyType
+     * @param province
      * @return
      */
     @Override
-    public List<PolicyVo> selectByType(String policyType) throws IOException {
+    public List<PolicyVo> selectByType(String policyType, String province) throws IOException {
         ArrayList<PolicyVo> policyVos = new ArrayList<>();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        // 布尔查询
+        BoolQueryBuilder builder = QueryBuilders.boolQuery();
+        builder.filter(QueryBuilders.matchQuery("province", province));
+        builder.filter(QueryBuilders.termQuery("policy_type.keyword", policyType));
         //  termQuery只能匹配一个值，第一个入参为字段名称，第二个参数为传入的值，相当于sql中的=
-        searchSourceBuilder.query(QueryBuilders.termQuery("policy_type.keyword", policyType));
+        searchSourceBuilder.query(builder);
         //构建查询请求对象，入参为索引
         SearchRequest searchRequest = new SearchRequest("policy");
         // searchSourceBuilder.query(QueryBuilders.existsQuery("province"));
@@ -133,8 +135,8 @@ public class ESClientServiceImpl implements ESClientService {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         // 高亮显示
         HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.preTags("<span style='color:red'>");//前缀后缀
-        highlightBuilder.postTags("</span>");
+        highlightBuilder.preTags("&lt;span style='color:red'&gt;");//前缀后缀
+        highlightBuilder.postTags("&lt;/span&gt;");
         // 布尔查询
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         // 定义高亮数组
@@ -216,6 +218,8 @@ public class ESClientServiceImpl implements ESClientService {
         fields.put("policy_source", 1.5f);
         fields.put("province", 1.5f);
         searchSourceBuilder.query(QueryBuilders.multiMatchQuery(keyWord).minimumShouldMatch("50%").fields(fields));
+        searchSourceBuilder.from(0);
+        searchSourceBuilder.size(50);
         //构建查询请求对象，入参为索引
         SearchRequest searchRequest = new SearchRequest("policy");
         //向搜索请求对象中配置搜索源

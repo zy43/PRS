@@ -198,11 +198,11 @@ public class ESClientController {
         return CommonResult.success(policyVos);
     }
 
-    @ApiOperation("首页根据类型查找")
+    @ApiOperation("首页根据类型和省份查找")
     @PostMapping("/listByType")
     public CommonResult<List<PolicyVo>> selectByType(@RequestBody PolicyParam param) throws IOException {
 
-        List<PolicyVo> policyVos = esClientService.selectByType(param.getPolicyType());
+        List<PolicyVo> policyVos = esClientService.selectByType(param.getPolicyType(), param.getProvince());
         return CommonResult.success(policyVos);
     }
 

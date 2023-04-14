@@ -1,6 +1,5 @@
 package com.ittime.PRS.modules.policy.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.PolicyDetailVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
@@ -8,7 +7,6 @@ import org.elasticsearch.action.search.SearchResponse;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author zhl129
@@ -23,10 +21,12 @@ public interface ESClientService {
 
     /**
      * 根据类型查找
+     *
      * @param policyType
+     * @param province
      * @return
      */
-    List<PolicyVo> selectByType(String policyType) throws IOException;
+    List<PolicyVo> selectByType(String policyType, String province) throws IOException;
 
     /**
      * 该类型下政策筛选

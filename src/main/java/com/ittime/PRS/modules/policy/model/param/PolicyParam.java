@@ -16,4 +16,7 @@ public class PolicyParam {
 
     @ApiModelProperty("关键词")
     private String keyWord;
+
+    @ApiModelProperty("省份")
+    private String province;
 }

@@ -9,14 +9,19 @@ import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.CountVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.model.vo.ProvinceListVo;
+import com.ittime.PRS.modules.policy.model.vo.SimilarityVo;
 import com.ittime.PRS.modules.policy.service.PolicyService;
+import com.ittime.PRS.modules.ums.model.UmsAdmin;
+import com.ittime.PRS.modules.ums.service.UmsAdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -35,6 +40,9 @@ public class PolicyController {
 
     @Autowired
     private PolicyService policyService;
+
+    @Autowired
+    private UmsAdminService umsAdminService;
 
 
     @ApiOperation("首页根据类型查找")
@@ -70,5 +78,14 @@ public class PolicyController {
         CountVo countVo = policyService.getPolicyCount();
         return CommonResult.success(countVo);
     }
+
+    @ApiOperation("首页根据用户收藏推荐")
+    @PostMapping("/getSimilarityPolicy")
+    public CommonResult<List<SimilarityVo>> getSimilarityPolicy(Principal principal) throws IOException {
+        UmsAdmin user = umsAdminService.getAdminByUsername(principal.getName());
+        List<SimilarityVo> similarityVos = policyService.getSimilarityPolicy(user.getId());
+        return CommonResult.success(similarityVos);
+    }
+
 }
 

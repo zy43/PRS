@@ -15,9 +15,9 @@ import com.ittime.PRS.modules.collection.model.vo.CollectionVo;
  */
 public interface CollectionService extends IService<Collection> {
 
-    boolean addCollection(Long id, Collection collection);
+    boolean addCollection(Long id, Long policyId);
 
-    boolean deleteCollection(Long id);
+    boolean deleteCollection(Long id, Long policyId);
 
     IPage<CollectionVo> pageList(Long id, Integer pageSize, Integer pageNum);
 }

@@ -1,6 +1,7 @@
 package com.ittime.PRS.modules.policy.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ittime.PRS.common.api.CommonPage;
 import com.ittime.PRS.common.api.CommonResult;
@@ -82,9 +83,12 @@ public class PolicyController {
     @ApiOperation("首页根据用户收藏推荐")
     @PostMapping("/getSimilarityPolicy")
     public CommonResult<List<SimilarityVo>> getSimilarityPolicy(Principal principal) throws IOException {
-        UmsAdmin user = umsAdminService.getAdminByUsername(principal.getName());
-        List<SimilarityVo> similarityVos = policyService.getSimilarityPolicy(user.getId());
-        return CommonResult.success(similarityVos);
+        if(StrUtil.isNotEmpty(principal.getName())){
+            UmsAdmin user = umsAdminService.getAdminByUsername(principal.getName());
+            List<SimilarityVo> similarityVos = policyService.getSimilarityPolicy(user.getId());
+            return CommonResult.success(similarityVos);
+        }
+        return  CommonResult.success(null,"未登录");
     }
 
 }

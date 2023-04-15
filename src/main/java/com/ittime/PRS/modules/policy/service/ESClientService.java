@@ -51,10 +51,12 @@ public interface ESClientService {
 
     /**
      * 查看详情
+     *
      * @param id
+     * @param userId
      * @return
      */
-    PolicyDetailVo getById(Long id) throws IOException;
+    Map<String, Object> getById(Long id, Long userId) throws IOException;
 
     SearchResponse getFilterList(String indexName) throws IOException;
 }

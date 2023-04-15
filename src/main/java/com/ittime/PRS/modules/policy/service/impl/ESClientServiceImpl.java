@@ -3,6 +3,8 @@ package com.ittime.PRS.modules.policy.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ittime.PRS.modules.collection.mapper.CollectionMapper;
 import com.ittime.PRS.modules.policy.model.Policy;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.PolicyDetailVo;
@@ -24,6 +26,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.ittime.PRS.modules.collection.model.Collection;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,6 +42,9 @@ public class ESClientServiceImpl implements ESClientService {
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+    @Autowired
+    private CollectionMapper collectionMapper;
 
     @Override
     public SearchResponse getAll(String indexName) throws IOException {
@@ -296,11 +302,14 @@ public class ESClientServiceImpl implements ESClientService {
 
     /**
      * 查看详情
+     *
      * @param id
+     * @param userId
      * @return
      */
     @Override
-    public PolicyDetailVo getById(Long id) throws IOException {
+    public Map<String, Object> getById(Long id, Long userId) throws IOException {
+        HashMap<String, Object> map = new HashMap<>();
         PolicyDetailVo policyDetailVo = new PolicyDetailVo();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         //  termQuery只能匹配一个值，第一个入参为字段名称，第二个参数为传入的值，相当于sql中的=
@@ -323,8 +332,15 @@ public class ESClientServiceImpl implements ESClientService {
             }
             System.out.println(total);
         }
+        map.put("policyDetailVo", policyDetailVo);
+        // 查看是否已收藏
+        LambdaQueryWrapper<Collection> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Collection::getUserId,userId);
+        queryWrapper.eq(Collection::getPolicyId,id);
+        int count = collectionMapper.selectCount(queryWrapper).intValue();
+        map.put("flag", count);
         // restHighLevelClient.close();
-        return policyDetailVo;
+        return map;
     }
 
     @Override

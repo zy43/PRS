@@ -3,7 +3,6 @@ package com.ittime.PRS.modules.collection.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.j2objc.annotations.AutoreleasePool;
 import com.ittime.PRS.modules.collection.convert.CollectionConvert;
 import com.ittime.PRS.modules.collection.model.Collection;
 import com.ittime.PRS.modules.collection.mapper.CollectionMapper;
@@ -36,29 +35,20 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
     private CollectionConvert collectionConvert;
 
     @Override
-    public boolean addCollection(Long userId, Collection collection) {
-        LambdaQueryWrapper<Collection> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Collection::getUserId,userId);
-        queryWrapper.eq(Collection::getPolicyId,collection.getPolicyId());
-        int count = baseMapper.selectCount(queryWrapper).intValue();
-        if(count == 0){
-            collection.setUserId(userId);
-            baseMapper.insert(collection);
-            return true;
-        }
-        return false;
+    public boolean addCollection(Long userId, Long policyId) {
+        Collection collection = new Collection();
+        collection.setPolicyId(policyId);
+        collection.setUserId(userId);
+        baseMapper.insert(collection);
+        return true;
     }
 
     @Override
-    public boolean deleteCollection(Long id) {
-        LambdaQueryWrapper<Collection> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Collection::getId,id);
-        int count = baseMapper.selectCount(queryWrapper).intValue();
-        if(count == 1){
-            baseMapper.deleteById(id);
-            return true;
-        }
-        return false;
+    public boolean deleteCollection(Long userId, Long policyId) {
+        baseMapper.delete(new LambdaQueryWrapper<Collection>().eq(Collection::getUserId, userId)
+                .eq(Collection::getPolicyId, policyId));
+        return true;
+
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.ittime.PRS.modules.policy.model.vo.ESIndexVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyDetailVo;
 import com.ittime.PRS.modules.policy.model.vo.PolicyVo;
 import com.ittime.PRS.modules.policy.service.ESClientService;
+import com.ittime.PRS.modules.ums.service.UmsAdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
@@ -41,9 +42,11 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +70,8 @@ public class ESClientController {
     @Autowired
     private ESClientService esClientService;
 
-
+    @Autowired
+    private UmsAdminService umsAdminService;
 
     @ApiOperation("查询所有索引数据")
     @GetMapping("/getAll")
@@ -221,10 +225,10 @@ public class ESClientController {
 
     @ApiOperation("查看政策详情")
     @PostMapping("/getById/{id}")
-    public CommonResult<PolicyDetailVo> getById(@PathVariable(value = "id") Long id) throws IOException {
-
-        PolicyDetailVo policyDetailVo = esClientService.getById(id);
-        return CommonResult.success(policyDetailVo);
+    public CommonResult<Map<String, Object>> getById(@PathVariable(value = "id") Long id, Principal principal) throws IOException {
+        Long userId = umsAdminService.getAdminByUsername(principal.getName()).getId();
+        Map<String,Object> map = esClientService.getById(id, userId);
+        return CommonResult.success(map);
     }
 
 

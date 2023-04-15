@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ittime.PRS.common.api.CommonPage;
 import com.ittime.PRS.common.api.CommonResult;
 import com.ittime.PRS.modules.collection.model.Collection;
+import com.ittime.PRS.modules.collection.model.param.CollectParam;
 import com.ittime.PRS.modules.collection.model.vo.CollectionVo;
 import com.ittime.PRS.modules.collection.service.CollectionService;
 import com.ittime.PRS.modules.ums.model.UmsAdmin;
@@ -39,29 +40,21 @@ public class CollectionController {
     @Autowired
     private CollectionService collectionService;
 
-    @ApiOperation("添加收藏")
+    @ApiOperation("添加/删除收藏")
     @PostMapping
-    public CommonResult<String> add(Principal principal,@RequestBody Collection collection){
+    public CommonResult<String> addOrDelete(Principal principal,@RequestBody CollectParam collectParam){
         String name = principal.getName();
         UmsAdmin user = umsAdminService.getAdminByUsername(name);
-        boolean success = collectionService.addCollection(user.getId(),collection);
-        if (success) {
+        // 未收藏
+        if (collectParam.getFlag() == 0) {
+            collectionService.addCollection(user.getId(),collectParam.getPolicyId());
             return CommonResult.success("添加成功");
         } else {
-            return CommonResult.failed("已存在，添加失败");
+            collectionService.deleteCollection(user.getId(),collectParam.getPolicyId());
+            return CommonResult.success("删除成功");
         }
     }
 
-    @ApiOperation("删除收藏")
-    @DeleteMapping("/{id}")
-    public CommonResult<String> delete(@PathVariable Long id){
-        boolean success = collectionService.deleteCollection(id);
-        if (success) {
-            return CommonResult.success("删除成功");
-        } else {
-            return CommonResult.failed("删除失败");
-        }
-    }
 
 
     @ApiOperation("用户收藏列表")

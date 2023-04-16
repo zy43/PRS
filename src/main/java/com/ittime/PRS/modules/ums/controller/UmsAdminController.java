@@ -91,6 +91,20 @@ public class UmsAdminController {
         return CommonResult.success(tokenMap);
     }
 
+    @ApiOperation(value = "管理平台登录以后返回token")
+    @PostMapping(value = "/umsLogin")
+    @ResponseBody
+    public CommonResult umsLogin(@Validated @RequestBody UmsAdminLoginParam umsAdminLoginParam) {
+        String token = adminService.umsLogin(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
+        if (token == null) {
+            return CommonResult.validateFailed("您没有权限！");
+        }
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token);
+        tokenMap.put("tokenHead", tokenHead);
+        return CommonResult.success(tokenMap);
+    }
+
     @ApiOperation(value = "刷新token")
     @RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
     @ResponseBody

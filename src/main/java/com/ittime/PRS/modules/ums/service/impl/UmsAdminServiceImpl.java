@@ -343,6 +343,32 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         return adminMapper.updateInfo(nickName, password, tel, username);
     }
 
+    @Override
+    public String umsLogin(String username, String password) {
+        String token = null;
+        //获取用户权限
+        String authority = getAdminByUsername(username).getNickName();
+        if("管理员".equals(authority)){
+            //密码需要客户端加密后传递
+            try {
+                UserDetails userDetails = loadUserByUsername(username);
+                if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+                    Asserts.fail("密码不正确");
+                }
+                if (!userDetails.isEnabled()) {
+                    Asserts.fail("帐号已被禁用");
+                }
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                token = jwtTokenUtil.generateToken(userDetails);
+                updateLoginTimeByUsername(username);
+                insertLoginLog(username);
+            } catch (AuthenticationException e) {
+                LOGGER.warn("登录异常:{}", e.getMessage());
+            }
+        }
+        return token;
+    }
 
 
 }

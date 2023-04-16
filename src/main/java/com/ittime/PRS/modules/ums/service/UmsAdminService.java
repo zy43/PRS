@@ -100,4 +100,12 @@ public interface UmsAdminService extends IService<UmsAdmin> {
 
 
     boolean updateInfo(String nickName, String password, String tel, String username);
+
+    /**
+     * 管理平台登录
+     * @param username
+     * @param password
+     * @return
+     */
+    String umsLogin(String username, String password);
 }

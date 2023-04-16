@@ -154,7 +154,7 @@ public class ESClientServiceImpl implements ESClientService {
 
         }
         if(StrUtil.isNotBlank(param.getGrade())){
-            builder.filter(QueryBuilders.termQuery("policy_grade", param.getGrade()));
+            builder.filter(QueryBuilders.termQuery("policy_grade.keyword", param.getGrade()));
             highlightBuilder.field("policy_grade");
             highlights.add("policy_grade");
         }

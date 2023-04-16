@@ -1,5 +1,6 @@
 package com.ittime.PRS.modules.policy.model;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -35,6 +36,7 @@ public class Policy extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId("policy_id")
     @ApiModelProperty("政策ID")
     private Long policyId;
 

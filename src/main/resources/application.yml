@@ -48,6 +48,7 @@ secure:
       - /actuator/**
       - /druid/**
       - /admin/login
+      - /admin/umsLogin
       - /admin/register
       - /admin/info
       - /admin/logout

@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ittime.PRS.common.api.CommonPage;
 import com.ittime.PRS.common.api.CommonResult;
+import com.ittime.PRS.modules.policy.model.Policy;
 import com.ittime.PRS.modules.policy.model.param.PolicyParam;
 import com.ittime.PRS.modules.policy.model.param.SelectParam;
 import com.ittime.PRS.modules.policy.model.vo.CountVo;
@@ -91,5 +92,28 @@ public class PolicyController {
         return  CommonResult.success(null,"未登录");
     }
 
+    @ApiOperation("政策添加")
+    @PostMapping("/add")
+    public CommonResult<String> add(@RequestBody Policy policy){
+        boolean flag = policyService.save(policy);
+        if(flag) return CommonResult.success("添加成功");
+        else return CommonResult.failed("添加失败");
+    }
+
+    @ApiOperation("政策删除")
+    @PostMapping("/delete/{id}")
+    public CommonResult<String> delete(@PathVariable Long id){
+        boolean flag = policyService.removeById(id);
+        if(flag) return CommonResult.success("删除成功");
+        else return CommonResult.failed("删除失败");
+    }
+
+    @ApiOperation("政策修改")
+    @PostMapping("/update")
+    public CommonResult<String> update(@RequestBody Policy policy){
+        boolean flag = policyService.updateById(policy);
+        if(flag) return CommonResult.success("修改成功");
+        else return CommonResult.failed("修改失败");
+    }
 }
 

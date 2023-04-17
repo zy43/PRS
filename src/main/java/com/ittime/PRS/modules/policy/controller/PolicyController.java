@@ -84,12 +84,12 @@ public class PolicyController {
     @ApiOperation("首页根据用户收藏推荐")
     @PostMapping("/getSimilarityPolicy")
     public CommonResult<List<SimilarityVo>> getSimilarityPolicy(Principal principal) throws IOException {
-        if(StrUtil.isNotEmpty(principal.getName())){
-            UmsAdmin user = umsAdminService.getAdminByUsername(principal.getName());
-            List<SimilarityVo> similarityVos = policyService.getSimilarityPolicy(user.getId());
-            return CommonResult.success(similarityVos);
+        Long id = 0L;
+        if(StrUtil.isNotEmpty(principal.getName())) {
+            id = umsAdminService.getAdminByUsername(principal.getName()).getId();
         }
-        return  CommonResult.success(null,"未登录");
+        List<SimilarityVo> similarityVos = policyService.getSimilarityPolicy(id);
+        return CommonResult.success(similarityVos);
     }
 
     @ApiOperation("政策添加")

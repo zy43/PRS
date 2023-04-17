@@ -250,7 +250,7 @@ public class PolicyServiceImpl extends ServiceImpl<PolicyMapper, Policy> impleme
         collectionLambdaQueryWrapper.orderByDesc(BaseEntity::getCreateTime);
         List<Collection> collectionList = collectionMapper.selectList(collectionLambdaQueryWrapper);
         //用户没有收藏
-        if(collectionList.isEmpty()){
+        if(collectionList.isEmpty() || id == 0L){
             SecureRandom secureRandom = new SecureRandom();
             secureRandom.setSeed(10000L);
 

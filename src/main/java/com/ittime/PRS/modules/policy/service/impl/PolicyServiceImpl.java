@@ -124,7 +124,7 @@ public class PolicyServiceImpl extends ServiceImpl<PolicyMapper, Policy> impleme
         Page<Policy> page = new Page<>(pageNum, pageSize);
 
         LambdaQueryWrapper<Policy> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Policy::getPolicyType, param.getPolicyType())
+        wrapper.eq(StrUtil.isNotBlank(param.getPolicyType()),Policy::getPolicyType, param.getPolicyType())
                 .eq(StrUtil.isNotBlank(param.getGrade()), Policy::getPolicyGrade, param.getGrade())
                 .eq(StrUtil.isNotBlank(param.getProvince()), Policy::getProvince, param.getProvince())
                 .eq(StrUtil.isNotBlank(param.getSource()), Policy::getPolicySource, param.getSource())

@@ -85,7 +85,7 @@ public class PolicyController {
     @PostMapping("/getSimilarityPolicy")
     public CommonResult<List<SimilarityVo>> getSimilarityPolicy(Principal principal) throws IOException {
         Long id = 0L;
-        if(StrUtil.isNotEmpty(principal.getName())) {
+        if(principal != null) {
             id = umsAdminService.getAdminByUsername(principal.getName()).getId();
         }
         List<SimilarityVo> similarityVos = policyService.getSimilarityPolicy(id);
